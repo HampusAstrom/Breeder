@@ -68,7 +68,7 @@ import random as rng
 #
 #
 
-global species_list = {
+species_list = {
     'buffalo': {
         'psyche': {
             'neutral': (10, None),
@@ -93,21 +93,39 @@ global species_list = {
 }
 
 class Creature:
+    # should only be used by internal functions
+    # _init_from_species and _init_from_parents
+    def __init__(self, kromosomes):
+        self.kromosomes = kromosomes;
 
-    # create by parents if two are provided,
-    # by species if no parents are provided and species is provided
-    # return None otherwise
-    def __init__(self, species=None, parent1=None, parent2=None):
-        # initiate default chromosomes
+    # returns a new creature
+    @classmethod
+    def _init_from_species(cls, species):
+        if species in species_list:
+            return cls(1)
+            #pass # TODO: implement kromosome creation here
+            # return cls(kromosomes)
+        else:
+            print("Species not listed, cannot create")
+            return None
 
-        # initiate extra_chromosomes
+    # returns a new creature as offspring
+    @classmethod
+    def _init_from_parents(cls, parent1, parent2):
+        pass # TODO: implement kromosome creation here
+        # return cls(kromosomes)
+
+    @classmethod
+    def new_creature(cls, species):
+        return cls._init_from_species(species)
 
     def breed_with(self, partner):
         # check if they match enough to breed
-        if (not match_with(partner)):
+        if (not self.match_with(partner)):
             return None
 
         # create offspring
-        return Creature(parent1=self, parent2=partner)
+        return self._init_from_parents(parent1=self, parent2=partner)
 
     def match_with(self, partner):
+        return True
