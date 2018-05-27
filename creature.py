@@ -12,17 +12,17 @@ import random as rng
 
 # Ideas for base chromosomes and their genes
 # psyche chromosome:
-# ?: composed, aggressive, nurturing, creative, loyal, attentive, manipulative,
-# autonomous, energetic, feral
+# ?: composed, energetic, aggressive, creative, nurturing, manipulative, feral,
+# loyal, autonomous, attentive
 #
 # tissue chromosome:
 # ?: fur, scales, sweat glands, fat, slow muscles, fast muscles,
 # lightweight bones
 #
 # morphology chromosome:
-# ?: claws, ears, venom glands, poison gland, winged frontlimbs, frontlimb focus,
-# backlimb focus, fangs, jaw focus, fine motorics?, nose, eyes, antenna?,
-# horns, herbivore (grass/leaves), big brain?
+# ?: hearing, frontlimb focus, backlimb focus, vision, jaw focus, fine motorics?,
+# claws, horns/tusks, fangs, poison gland, winged frontlimbs, venom glands, smell,
+# antenna?, big brain?, herbivore (grass/leaves)
 #
 # to add: small with many kids? vs large with fewer kids?
 
@@ -84,10 +84,11 @@ species_list = {
             'fat': 1
         },
         'morphology': {
-            'neutral': (10, None),
+            'neutral': (9, None),
             'jaw_focus': 1,
-            'nose': 1,
-            'herbivore': 2
+            'smell': 1,
+            'herbivore': 2,
+            'horns' : 2,
         },
     }
 }
