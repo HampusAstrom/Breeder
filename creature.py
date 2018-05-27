@@ -10,22 +10,6 @@ import random as rng
 # debility genes, that only hurts when the same is present many times in a
 # chromosome (gets exponentially worse, after first 2-3?)
 
-# Ideas for base chromosomes and their genes
-# psyche chromosome:
-# ?: composed, energetic, aggressive, creative, nurturing, manipulative, feral,
-# loyal, autonomous, attentive
-#
-# tissue chromosome:
-# ?: fur, scales, sweat glands, fat, slow muscles, fast muscles,
-# lightweight bones
-#
-# morphology chromosome:
-# ?: hearing, frontlimb focus, backlimb focus, vision, jaw focus, fine motorics?,
-# claws, horns/tusks, fangs, poison gland, winged frontlimbs, venom glands, smell,
-# antenna?, big brain?, herbivore (grass/leaves)
-#
-# to add: small with many kids? vs large with fewer kids?
-
 # derived abilities
 # cold resistance
 # heat resistance
@@ -68,23 +52,82 @@ import random as rng
 #
 #
 
+# Ideas for base chromosomes and their genes
+# psyche chromosome:
+psyche = [
+    'composed',
+    'energetic',
+    'aggressive',
+    'creative',
+    'nurturing',
+    'manipulative',
+    'feral',
+    'loyal',
+    'autonomous',
+    'attentive'
+]
+#
+# tissue chromosome:
+ tissue = [
+    'fur',
+    'scales',
+    'sweat_glands',
+    'fat',
+    'slow_muscles',
+    'fast_muscles',
+    'lightweight_bones'
+]
+
+# morphology chromosome:
+morphology = [
+    'hearing',
+    'frontlimb focus',
+    'backlimb focus',
+    'vision',
+    'jaw_focus',
+    'fine_motorics', #?
+    'claws',
+    'horns',        #or tusks?
+    'fangs',
+    'poison_glands',
+    'winged_frontlimbs',
+    'venom_glands',
+    'smell',
+    'antennae',     #?
+    'big_brain',    #?
+    'herbivore'     # (grass/leaves)
+]
+
+base_chromosomes = {
+    'morphology' : morphology,
+    'tissue': tissue,
+    'psyche': psyche
+}
+
+#
+# to add: small with many kids? vs large with fewer kids?
+gene_width = 5
+
+# It's possible that there should be some modifications to the various loci in
+# the species dictionary, somehow
+
 species_list = {
     'buffalo': {
         'psyche': {
-            'neutral': (10, None),
+            'neutral': 10,
             'composed': 1,
             'nurturing': 1,
             'loyal': 1,
             'feral': 2
         },
         'tissue': {
-            'neutral': (10, None),
+            'neutral': 10,
             'fur': 2,
             'slow_muscles': 2,
             'fat': 1
         },
         'morphology': {
-            'neutral': (9, None),
+            'neutral': 9,
             'jaw_focus': 1,
             'smell': 1,
             'herbivore': 2,
@@ -130,3 +173,29 @@ class Creature:
 
     def match_with(self, partner):
         return True
+
+    def init_chromosomes(self, species):
+        model_species = species_list[species]
+        chromosomes = {}
+        for chromosome, species_genes in model_species.items():
+            chromosome_length = gene_width * len(base_chromosomes[chromosome])
+            curr_chromosome = [(0,0)]*chromosome_length
+
+            loci = range(0, chromosome_length, gene_width)
+            total = sum(species_genes.values())
+            nnz = floor(rng.gauss(total - species_genes['neutral'], total/4) * chromosome_length/total)
+            gene_list = rng.choice(species_genes.keys(1:), weights = species_genes.values(1:), k = nnz)
+            for gene_idx in range(nnz):
+                position = floor(rng.triangular(0, gene_width))
+                # create the debilities as well here; for now they will all be zero.
+                gene_value = (base_chromosomes[chromosome].index(gene_list[gene_idx]), 0)
+                if curr_chromosome[loci[gene_value[0]] + position] is not (0,0):
+                    curr_chromosome[loci[gene_value[0]] + position] = gene_value
+                else:
+                    dir = rng.choice((-1,1))
+                    k = 1
+                    while(curr_chromosome[loci[gene_value[0]] + position + dir*k]) is not (0,0):
+                        k = k+1
+                    curr_chromosome[loci[gene_value[0]] + position + dir*k] = gene_value
+            chromosomes[chromosome] = curr_chromosome
+        return
