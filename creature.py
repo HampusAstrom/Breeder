@@ -162,21 +162,32 @@ class Creature:
             loci = range(0, chromosome_length, loci_width)
             total_present = sum(species_genes.values())
             total = total_present + weight_neutral
-            nnz = math.floor(rng.gauss(total_present, total/4) * chromosome_length/total)
+            nnz = math.floor(rng.gauss(total_present, total/8) * chromosome_length/total)
 
-            gene_list = rng.choices(list(species_genes.keys()), weights = species_genes.values(), k = nnz)
-            for gene_idx in range(nnz):
-                position = math.floor(rng.triangular(0, loci_width))
+            non_neutral_genes = rng.choices(list(species_genes.keys()), weights = species_genes.values(), k = nnz)
+
+            for idx_nz_gene in range(nnz):
+                displacement = math.floor(rng.gauss(loci_width/2, loci_width/4))
+
                 # create the debilities as well here; for now they will all be zero.
-                gene_value = (base_chromosomes[chromosome].index(gene_list[gene_idx]), 0)
-                if curr_chromosome[loci[gene_value[0]] + position] is not (0,0):
-                    curr_chromosome[loci[gene_value[0]] + position] = gene_value
+                gene_position_idx = base_chromosomes[chromosome].index(non_neutral_genes[idx_nz_gene])
+                gene_position = (loci[gene_position_idx] + displacement)%(chromosome_length-1)
+                ability_value = base_chromosomes[chromosome].index(non_neutral_genes[idx_nz_gene])+1
+                debility_value = 0
+                gene_value = (ability_value, debility_value)
+
+                if curr_chromosome[gene_position][0] is not 0:
+                    curr_chromosome[gene_position] = gene_value
+
                 else:
-                    dir = rng.choice((-1,1))
-                    k = 1
-                    while(curr_chromosome[loci[gene_value[0]] + position + dir*k]) is not (0,0):
-                        k = k+1
-                    curr_chromosome[loci[gene_value[0]] + position + dir*k] = gene_value
+                    slip_dir = rng.choice((-1,1))
+                    slips = 1
+                    while(curr_chromosome[gene_position + slip_dir*slips])[0] is not 0:
+                        slips = slips + 1
+                        if gene_position + slip_dir * slips >= chromosome_length:
+                            gene_position = gene_position - chromosome_length
+                    curr_chromosome[gene_position + slip_dir * slips] = gene_value
+
             chromosomes[chromosome] = curr_chromosome
         return cls(chromosomes)
 
