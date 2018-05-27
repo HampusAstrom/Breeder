@@ -95,16 +95,16 @@ species_list = {
 class Creature:
     # should only be used by internal functions
     # _init_from_species and _init_from_parents
-    def __init__(self, kromosomes):
-        self.kromosomes = kromosomes;
+    def __init__(self, chromosomes):
+        self.chromosomes = chromosomes;
 
     # returns a new creature
     @classmethod
     def _init_from_species(cls, species):
         if species in species_list:
             return cls(1)
-            #pass # TODO: implement kromosome creation here
-            # return cls(kromosomes)
+            #pass # TODO: implement chromosomes creation here
+            # return cls(chromosomes)
         else:
             print("Species not listed, cannot create")
             return None
@@ -112,8 +112,8 @@ class Creature:
     # returns a new creature as offspring
     @classmethod
     def _init_from_parents(cls, parent1, parent2):
-        pass # TODO: implement kromosome creation here
-        # return cls(kromosomes)
+        pass # TODO: implement chromosomes creation here
+        # return cls(chromosomes)
 
     @classmethod
     def new_creature(cls, species):
