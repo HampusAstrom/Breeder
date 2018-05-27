@@ -1,5 +1,6 @@
 import numpy as np
 import random as rng
+import math
 
 
 # All creatures have the 3 base chromosomes
@@ -68,7 +69,7 @@ psyche = [
 ]
 #
 # tissue chromosome:
- tissue = [
+tissue = [
     'fur',
     'scales',
     'sweat_glands',
@@ -106,7 +107,7 @@ base_chromosomes = {
 
 #
 # to add: small with many kids? vs large with fewer kids?
-gene_width = 5
+loci_width = 5
 
 # It's possible that there should be some modifications to the various loci in
 # the species dictionary, somehow
@@ -145,13 +146,39 @@ class Creature:
     # returns a new creature
     @classmethod
     def _init_from_species(cls, species):
-        if species in species_list:
-            return cls(1)
-            #pass # TODO: implement chromosomes creation here
-            # return cls(chromosomes)
-        else:
+        if not species in species_list:
             print("Species not listed, cannot create")
             return None
+
+        model_species = species_list[species]
+        chromosomes = {}
+        for chromosome, species_genes_full in model_species.items():
+            chromosome_length = loci_width * len(base_chromosomes[chromosome])
+            curr_chromosome = [(0,0)] * chromosome_length
+            weight_neutral = species_genes_full['neutral']
+            species_genes = species_genes_full.copy()
+            del species_genes['neutral']
+
+            loci = range(0, chromosome_length, loci_width)
+            total_present = sum(species_genes.values())
+            total = total_present + weight_neutral
+            nnz = math.floor(rng.gauss(total_present, total/4) * chromosome_length/total)
+
+            gene_list = rng.choices(list(species_genes.keys()), weights = species_genes.values(), k = nnz)
+            for gene_idx in range(nnz):
+                position = math.floor(rng.triangular(0, loci_width))
+                # create the debilities as well here; for now they will all be zero.
+                gene_value = (base_chromosomes[chromosome].index(gene_list[gene_idx]), 0)
+                if curr_chromosome[loci[gene_value[0]] + position] is not (0,0):
+                    curr_chromosome[loci[gene_value[0]] + position] = gene_value
+                else:
+                    dir = rng.choice((-1,1))
+                    k = 1
+                    while(curr_chromosome[loci[gene_value[0]] + position + dir*k]) is not (0,0):
+                        k = k+1
+                    curr_chromosome[loci[gene_value[0]] + position + dir*k] = gene_value
+            chromosomes[chromosome] = curr_chromosome
+        return cls(chromosomes)
 
     # returns a new creature as offspring
     @classmethod
@@ -173,29 +200,3 @@ class Creature:
 
     def match_with(self, partner):
         return True
-
-    def init_chromosomes(self, species):
-        model_species = species_list[species]
-        chromosomes = {}
-        for chromosome, species_genes in model_species.items():
-            chromosome_length = gene_width * len(base_chromosomes[chromosome])
-            curr_chromosome = [(0,0)]*chromosome_length
-
-            loci = range(0, chromosome_length, gene_width)
-            total = sum(species_genes.values())
-            nnz = floor(rng.gauss(total - species_genes['neutral'], total/4) * chromosome_length/total)
-            gene_list = rng.choice(species_genes.keys(1:), weights = species_genes.values(1:), k = nnz)
-            for gene_idx in range(nnz):
-                position = floor(rng.triangular(0, gene_width))
-                # create the debilities as well here; for now they will all be zero.
-                gene_value = (base_chromosomes[chromosome].index(gene_list[gene_idx]), 0)
-                if curr_chromosome[loci[gene_value[0]] + position] is not (0,0):
-                    curr_chromosome[loci[gene_value[0]] + position] = gene_value
-                else:
-                    dir = rng.choice((-1,1))
-                    k = 1
-                    while(curr_chromosome[loci[gene_value[0]] + position + dir*k]) is not (0,0):
-                        k = k+1
-                    curr_chromosome[loci[gene_value[0]] + position + dir*k] = gene_value
-            chromosomes[chromosome] = curr_chromosome
-        return
