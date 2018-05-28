@@ -107,7 +107,9 @@ base_chromosomes = {
 
 #
 # to add: small with many kids? vs large with fewer kids?
-loci_width = 5
+
+chromosome_length = 20
+debilities_per_cromosome = chromosome_length
 
 # It's possible that there should be some modifications to the various loci in
 # the species dictionary, somehow
@@ -153,7 +155,6 @@ class Creature:
         model_species = species_list[species]
         chromosomes = {}
         for chromosome, species_genes_full in model_species.items():
-            chromosome_length = 20
             loci_width = math.floor(chromosome_length/len(base_chromosomes[chromosome]))
             curr_chromosome = [(0,0)] * chromosome_length
             weight_neutral = species_genes_full['neutral']
@@ -175,7 +176,7 @@ class Creature:
                 gene_position_idx = base_chromosomes[chromosome].index(non_neutral_genes[idx_nz_gene])
                 gene_position = (loci[gene_position_idx] + displacement)%(chromosome_length-1)
                 ability_value = base_chromosomes[chromosome].index(non_neutral_genes[idx_nz_gene])+1
-                debility_value = 0
+                debility_value = rng.randint(1,debilities_per_cromosome)
                 gene_value = (ability_value, debility_value)
 
                 if curr_chromosome[gene_position][0] is not 0:
@@ -196,8 +197,30 @@ class Creature:
     # returns a new creature as offspring
     @classmethod
     def _init_from_parents(cls, parent1, parent2):
-        pass # TODO: implement chromosomes creation here
-        # return cls(chromosomes)
+        combined_chromosomes = []
+        chromosomes = {}
+
+        for chrome, genes in parent1.chromosomes.items():
+            if chrome in parent2.chromosomes:
+                combined_chromosomes.append(chrome)
+            elif rng.randint(0,1) is 1:
+                chromosomes[chrome] = genes
+
+        for chrome, genes in parent2.chromosomes.items():
+            if chrome not in parent1.chromosomes:
+                if rng.randint(0,1) is 1:
+                    chromosomes[chrome] = genes
+
+        for chrome in combined_chromosomes:
+            curr_chromosome = [(0,0)] * chromosome_length
+            for i in range(len(curr_chromosome)):
+                if rng.randint(0,1) is 1:
+                    curr_chromosome[i] = parent1.chromosomes[chrome][i]
+                else:
+                    curr_chromosome[i] = parent2.chromosomes[chrome][i]
+            chromosomes[chrome] = curr_chromosome
+
+        return cls(chromosomes)
 
     @classmethod
     def new_creature(cls, species):
@@ -212,17 +235,26 @@ class Creature:
         return self._init_from_parents(parent1=self, parent2=partner)
 
     def match_with(self, partner):
+        if partner is self:
+            return False
         return True
 
     # returns a dictionary of the chromosomes with sums for all present attributes
     def sum_gene_attributes(self):
-        ret = {}
+        ab = {}
+        deb = {}
         for chrome, genes in self.chromosomes.items():
             for gene in genes:
                 if gene[0] is not 0:
                     ability = base_chromosomes[chrome][gene[0]-1]
-                    if ability in ret:
-                        ret[ability] += 1
+                    if ability in ab:
+                        ab[ability] += 1
                     else:
-                        ret[ability] = 1
-        return ret
+                        ab[ability] = 1
+                if gene[1] is not 0:
+                    debility = chrome + str(gene[1])
+                    if debility in deb:
+                        deb[debility] += 1
+                    else:
+                        deb[debility] = 1
+        return ab, deb
