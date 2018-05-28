@@ -153,7 +153,8 @@ class Creature:
         model_species = species_list[species]
         chromosomes = {}
         for chromosome, species_genes_full in model_species.items():
-            chromosome_length = loci_width * len(base_chromosomes[chromosome])
+            chromosome_length = 20
+            loci_width = math.floor(chromosome_length/len(base_chromosomes[chromosome]))
             curr_chromosome = [(0,0)] * chromosome_length
             weight_neutral = species_genes_full['neutral']
             species_genes = species_genes_full.copy()
@@ -163,6 +164,7 @@ class Creature:
             total_present = sum(species_genes.values())
             total = total_present + weight_neutral
             nnz = math.floor(rng.gauss(total_present, total/8) * chromosome_length/total)
+            nnz = min(nnz, chromosome_length)
 
             non_neutral_genes = rng.choices(list(species_genes.keys()), weights = species_genes.values(), k = nnz)
 
@@ -211,3 +213,16 @@ class Creature:
 
     def match_with(self, partner):
         return True
+
+    # returns a dictionary of the chromosomes with sums for all present attributes
+    def sum_gene_attributes(self):
+        ret = {}
+        for chrome, genes in self.chromosomes.items():
+            for gene in genes:
+                if gene[0] is not 0:
+                    ability = base_chromosomes[chrome][gene[0]-1]
+                    if ability in ret:
+                        ret[ability] += 1
+                    else:
+                        ret[ability] = 1
+        return ret
