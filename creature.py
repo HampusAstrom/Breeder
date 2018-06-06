@@ -12,12 +12,16 @@ import math
 # chromosome (gets exponentially worse, after first 2-3?)
 
 # derived abilities
-# cold resistance
-# heat resistance
-# energy needs
+# cold resistance               ~ fur
+# heat resistance               ~ sweat_glands - fur
+# energy needs                  ~ - num_genes
 # water needs?
 # endurance
 # strength
+# hunting (stalking/chasing?)
+# ambush
+# hiding/camoflage
+# running/chasing?
 #
 # domesticated (might depend on other mental attributes)
 # social
@@ -30,6 +34,17 @@ import math
 # perceptive
 # independent/loner
 
+# Eating/Hunting stuff:
+# For all populations in a biome, these things are evaluated:
+# go through all feeding styles (including all hunting styles vs all other species)
+# enter into matrix
+# the most efficient population eats first, adding some strain to it's food source
+# which updates all other calcs against that foodsource, continue down updated
+# efficiency queue
+# Important to note that each species only uses one method of feeding in the end
+# but having more viable feeding sytles gives some robustness to food strain
+# currently (other than food strain for the current year), no populations dynamics
+# are done, can me expanded on in the future
 
 # default breeding genre recombination scheme
 # for each gene slot in offspring:
