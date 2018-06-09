@@ -130,8 +130,10 @@ base_chromosomes = {
 
 chromosome_length = 20
 debilities_per_cromosome = chromosome_length
+rand_mutate_chance = 0.0002
 
 use_chunk_combining = True
+chunk_shift_chance = 0.05
 
 # It's possible that there should be some modifications to the various loci in
 # the species dictionary, somehow
@@ -162,10 +164,21 @@ species_list = {
 }
 
 class Creature:
+    def rand_mutate(self):
+        for chrome, genes in self.chromosomes.items():
+            for i in range(len(genes)):
+                gene = genes[i]
+                if rng.random() < rand_mutate_chance:
+                    genes[i] = (rng.randint(0,len(base_chromosomes[chrome])), gene[1])
+                    gene = genes[i]
+                if rng.random() < rand_mutate_chance:
+                    genes[i] = (gene[0], rng.randint(0,len(base_chromosomes[chrome])))
+
     # should only be used by internal functions
     # _init_from_species and _init_from_parents
     def __init__(self, chromosomes):
-        self.chromosomes = chromosomes;
+        self.chromosomes = chromosomes
+        self.rand_mutate()
 
     # returns a new creature
     @classmethod
@@ -267,7 +280,10 @@ class Creature:
             curr_pos = 0
 
             while curr_pos < chromosome_length-1:
-                start = curr_pos # + rng noise
+                if rng.random() < chunk_shift_chance:
+                    start = curr_pos + round(rng.gauss(0,1))
+                else:
+                    start = curr_pos
                 start = max(start, 0) # clamped to range
                 end = start + rng.randint(1,4)
                 end = min(end, chromosome_length-1) # clamped to range
