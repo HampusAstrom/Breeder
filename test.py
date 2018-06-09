@@ -3,7 +3,7 @@ import sys
 from creature import Creature as cr
 
 def breed_linear(gen0, num_generations):
-    current_breeders = gen0
+    current_breeders = gen0[:]
     all_creatures = [gen0]
     for generation_idx in range(1, num_generations):
         new_cr_1 = current_breeders[0].breed_with(current_breeders[1])
@@ -35,31 +35,30 @@ def calculate_dummy_fitness(creature):
 
 def breed_dummy_fitness(gen0, num_generations):
     all_creatures = [gen0]
-    current_breeders = gen0
+    current_breeders = gen0[:]
 
     num_creatures_in_gen = 6
-
-    #print(current_breeders[0].chromosomes)
-    #print(current_breeders[1].chromosomes)
 
     for generation_idx in range(1, num_generations):
 
         #Breed some creatures, add all to the set of creatures
         #Evaluate "fitness" for each creature
-        fitness_vals = {}
+
         all_creatures.append([])
+        generation_fitness = []
         for creature_idx in range(num_creatures_in_gen):
             curr_creature = current_breeders[0].breed_with(current_breeders[1])
+            curr_fitness = calculate_dummy_fitness(curr_creature)
+
             all_creatures[generation_idx].append(curr_creature)
-            fitness_vals[curr_creature] = calculate_dummy_fitness(curr_creature)
+            generation_fitness.append([creature_idx, curr_fitness])
+
         #Set current_breeders to the two most fit creatures
-        best_creature = max(fitness_vals, key = fitness_vals.get)
-        current_breeders[0] = best_creature
-        #print(best_creature.chromosomes, fitness_vals[best_creature])
-        fitness_vals.pop(best_creature)
-        best_creature = max(fitness_vals, key = fitness_vals.get)
-        #print(best_creature.chromosomes, fitness_vals[best_creature])
-        current_breeders[1] = best_creature
+        generation_fitness = sorted(generation_fitness, key = lambda x : x[1])
+
+        current_breeders[0] = all_creatures[generation_idx][generation_fitness[0][0]]
+
+        current_breeders[1] = all_creatures[generation_idx][generation_fitness[1][0]]
 
     return all_creatures
 
@@ -92,10 +91,9 @@ def main(num_generations = 5, species = 'buffalo', breeding_scheme = 'linear_sch
     print_results(species, num_generations, result)
     exit()
 
-
-
 if __name__ == '__main__':
     args = sys.argv[1:]
+
     if len(args) >= 1:
         num_generations = int(args[0])
     else:
