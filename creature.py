@@ -15,6 +15,7 @@ import math
 # cold resistance               ~ fur
 # heat resistance               ~ sweat_glands - fur
 # energy needs                  ~ - num_genes
+# energy reserves
 # water needs?
 # endurance
 # strength
@@ -46,7 +47,7 @@ import math
 # currently (other than food strain for the current year), no populations dynamics
 # are done, can me expanded on in the future
 
-# default breeding genre recombination scheme
+# default breeding gene recombination scheme
 # for each gene slot in offspring:
 #   randomly select one parent and take its gene with the same slot index
 #   (a gene is a ability/debility pair)
@@ -67,6 +68,10 @@ import math
 #       - probably way too big a change in later generation, dont use!
 #
 #
+# alternative breeding gene recombination scheme
+# select chunks in sequence from either parent rather than genes,
+# chunks have a varied length
+# simple mutation involves shifting start possition in relation to writing pos
 
 # Ideas for base chromosomes and their genes
 # psyche chromosome:
@@ -125,6 +130,8 @@ base_chromosomes = {
 
 chromosome_length = 20
 debilities_per_cromosome = chromosome_length
+
+use_chunk_combining = True
 
 # It's possible that there should be some modifications to the various loci in
 # the species dictionary, somehow
@@ -211,7 +218,7 @@ class Creature:
 
     # returns a new creature as offspring
     @classmethod
-    def _init_from_parents(cls, parent1, parent2):
+    def _select_chromosomes(cls, parent1, parent2):
         combined_chromosomes = []
         chromosomes = {}
 
@@ -226,13 +233,52 @@ class Creature:
                 if rng.randint(0,1) is 1:
                     chromosomes[chrome] = genes
 
+        return combined_chromosomes, chromosomes
+
+    # returns a new creature as offspring
+    @classmethod
+    def _init_from_parents(cls, parent1, parent2):
+        combined_chromosomes = []
+        chromosomes = {}
+
+        combined_chromosomes, chromosomes = cls._select_chromosomes(parent1, parent2)
+
         for chrome in combined_chromosomes:
             curr_chromosome = [(0,0)] * chromosome_length
             for i in range(len(curr_chromosome)):
-                if rng.randint(0,1) is 1:
+                if rng.randint(0,1) is 0:
                     curr_chromosome[i] = parent1.chromosomes[chrome][i]
                 else:
                     curr_chromosome[i] = parent2.chromosomes[chrome][i]
+            chromosomes[chrome] = curr_chromosome
+
+        return cls(chromosomes)
+
+    # returns a new creature as offspring
+    @classmethod
+    def _init_from_parents_chunk(cls, parent1, parent2):
+        combined_chromosomes = []
+        chromosomes = {}
+
+        print("Chunk breeding")
+        combined_chromosomes, chromosomes = cls._select_chromosomes(parent1, parent2)
+
+        for chrome in combined_chromosomes:
+            curr_chromosome = [(0,0)] * chromosome_length
+            curr_pos = 0
+
+            while curr_pos < chromosome_length-1:
+                start = curr_pos # + rng noise
+                start = max(start, 0) # clamped to range
+                end = start + rng.randint(1,4)
+                end = min(end, chromosome_length-1) # clamped to range
+                l = end-start
+                if rng.randint(0,1) is 0:
+                    curr_chromosome[curr_pos:(curr_pos+l)] = parent1.chromosomes[chrome][start:end]
+                else:
+                    curr_chromosome[curr_pos:(curr_pos+l)] = parent2.chromosomes[chrome][start:end]
+                curr_pos = curr_pos + l
+
             chromosomes[chrome] = curr_chromosome
 
         return cls(chromosomes)
@@ -247,7 +293,10 @@ class Creature:
             return None
 
         # create offspring
-        return self._init_from_parents(parent1=self, parent2=partner)
+        if use_chunk_combining:
+            return self._init_from_parents_chunk(parent1=self, parent2=partner)
+        else:
+            return self._init_from_parents(parent1=self, parent2=partner)
 
     def match_with(self, partner):
         if partner is self:

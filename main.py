@@ -1,6 +1,8 @@
 import creature as cr
 
 def main():
+    cr.use_chunk_combining = True
+
     buff1 = cr.Creature.new_creature('buffalo')
     mouse = cr.Creature.new_creature('mouse')
     buff2 = cr.Creature.new_creature('buffalo')
