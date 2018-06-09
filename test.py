@@ -54,8 +54,8 @@ def breed_dummy_fitness(gen0, num_generations):
             generation_fitness.append([creature_idx, curr_fitness])
 
         #Set current_breeders to the two most fit creatures
-        generation_fitness = sorted(generation_fitness, key = lambda x : x[1])
-
+        generation_fitness = sorted(generation_fitness, key = lambda x : x[1],
+            reverse = True)
         current_breeders[0] = all_creatures[generation_idx][generation_fitness[0][0]]
 
         current_breeders[1] = all_creatures[generation_idx][generation_fitness[1][0]]
@@ -76,6 +76,7 @@ def print_results(species, num_generations, creatures):
                     #print(gene)
             print('Sum of genetic attributes, creature ' + str(n) + ': ')
             print(creature.sum_gene_attributes())
+            print('Creature fitness: ' + str(calculate_dummy_fitness(creature)))
             print()
             n += 1
         print()
