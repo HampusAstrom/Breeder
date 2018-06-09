@@ -214,13 +214,13 @@ class Creature:
                 debility_value = rng.randint(1,debilities_per_cromosome)
                 gene_value = (ability_value, debility_value)
 
-                if curr_chromosome[gene_position][0] is not 0:
+                if curr_chromosome[gene_position][0] != 0:
                     curr_chromosome[gene_position] = gene_value
 
                 else:
                     slip_dir = rng.choice((-1,1))
                     slips = 1
-                    while(curr_chromosome[gene_position + slip_dir*slips])[0] is not 0:
+                    while(curr_chromosome[gene_position + slip_dir*slips])[0] != 0:
                         slips = slips + 1
                         if gene_position + slip_dir * slips >= chromosome_length:
                             gene_position = gene_position - chromosome_length
@@ -238,12 +238,12 @@ class Creature:
         for chrome, genes in parent1.chromosomes.items():
             if chrome in parent2.chromosomes:
                 combined_chromosomes.append(chrome)
-            elif rng.randint(0,1) is 1:
+            elif rng.randint(0,1) == 1:
                 chromosomes[chrome] = genes
 
         for chrome, genes in parent2.chromosomes.items():
             if chrome not in parent1.chromosomes:
-                if rng.randint(0,1) is 1:
+                if rng.randint(0,1) == 1:
                     chromosomes[chrome] = genes
 
         return combined_chromosomes, chromosomes
@@ -259,7 +259,7 @@ class Creature:
         for chrome in combined_chromosomes:
             curr_chromosome = [(0,0)] * chromosome_length
             for i in range(len(curr_chromosome)):
-                if rng.randint(0,1) is 0:
+                if rng.randint(0,1) == 0:
                     curr_chromosome[i] = parent1.chromosomes[chrome][i]
                 else:
                     curr_chromosome[i] = parent2.chromosomes[chrome][i]
@@ -288,7 +288,7 @@ class Creature:
                 end = start + rng.randint(1,4)
                 end = min(end, chromosome_length-1) # clamped to range
                 l = end-start
-                if rng.randint(0,1) is 0:
+                if rng.randint(0,1) == 0:
                     curr_chromosome[curr_pos:(curr_pos+l)] = parent1.chromosomes[chrome][start:end]
                 else:
                     curr_chromosome[curr_pos:(curr_pos+l)] = parent2.chromosomes[chrome][start:end]
@@ -324,13 +324,13 @@ class Creature:
         deb = {}
         for chrome, genes in self.chromosomes.items():
             for gene in genes:
-                if gene[0] is not 0:
+                if gene[0] != 0:
                     ability = base_chromosomes[chrome][gene[0]-1]
                     if ability in ab:
                         ab[ability] += 1
                     else:
                         ab[ability] = 1
-                if gene[1] is not 0:
+                if gene[1] != 0:
                     debility = chrome + str(gene[1])
                     if debility in deb:
                         deb[debility] += 1
