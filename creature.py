@@ -260,7 +260,6 @@ class Creature:
         combined_chromosomes = []
         chromosomes = {}
 
-        print("Chunk breeding")
         combined_chromosomes, chromosomes = cls._select_chromosomes(parent1, parent2)
 
         for chrome in combined_chromosomes:
