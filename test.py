@@ -14,19 +14,71 @@ def breed_linear(gen0, num_generations):
 
     return all_creatures
 
-breeding_schemes = {'linear_scheme' : breed_linear}
+dummy_ideals_buffalo = {
+    'composed' : 10,
+    'nurturing' : 3,
+    'loyal' : 10,
+    'fur' : 5,
+    'fat' : 5
+}
+
+def calculate_dummy_fitness(creature):
+    abilities, debilities = creature.sum_gene_attributes()
+    fitness = 0
+    for ability, value in abilities.items():
+        if ability in dummy_ideals_buffalo:
+            fitness -= abs(value - dummy_ideals_buffalo[ability])
+        else:
+            fitness -= value
+    return fitness
+
+
+def breed_dummy_fitness(gen0, num_generations):
+    all_creatures = [gen0]
+    current_breeders = gen0
+
+    num_creatures_in_gen = 6
+
+    #print(current_breeders[0].chromosomes)
+    #print(current_breeders[1].chromosomes)
+
+    for generation_idx in range(1, num_generations):
+
+        #Breed some creatures, add all to the set of creatures
+        #Evaluate "fitness" for each creature
+        fitness_vals = {}
+        all_creatures.append([])
+        for creature_idx in range(num_creatures_in_gen):
+            curr_creature = current_breeders[0].breed_with(current_breeders[1])
+            all_creatures[generation_idx].append(curr_creature)
+            fitness_vals[curr_creature] = calculate_dummy_fitness(curr_creature)
+        #Set current_breeders to the two most fit creatures
+        best_creature = max(fitness_vals, key = fitness_vals.get)
+        current_breeders[0] = best_creature
+        #print(best_creature.chromosomes, fitness_vals[best_creature])
+        fitness_vals.pop(best_creature)
+        best_creature = max(fitness_vals, key = fitness_vals.get)
+        #print(best_creature.chromosomes, fitness_vals[best_creature])
+        current_breeders[1] = best_creature
+
+    return all_creatures
+
+breeding_schemes = {'linear_scheme' : breed_linear, "fitness" : breed_dummy_fitness}
 
 def print_results(species, num_generations, creatures):
     for generation_idx in range(num_generations):
         print('Creatures in generation ' + str(generation_idx) + ':')
+        n = 1
         for creature in creatures[generation_idx]:
-            print('Genetic material: ')
-            for creature_chromosome, genes in creature.chromosomes.items():
-                print(creature_chromosome)
-                for gene in genes:
-                    print(gene)
-            print('Sum of genetic attributes: ')
+            #print('Genetic material: ')
+            #for creature_chromosome, genes in creature.chromosomes.items():
+                #print(creature_chromosome)
+                #for gene in genes:
+                    #print(gene)
+            print('Sum of genetic attributes, creature ' + str(n) + ': ')
             print(creature.sum_gene_attributes())
+            print()
+            n += 1
         print()
 
 def main(num_generations = 5, species = 'buffalo', breeding_scheme = 'linear_scheme'):
