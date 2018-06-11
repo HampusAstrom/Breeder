@@ -64,22 +64,32 @@ def breed_dummy_fitness(gen0, num_generations):
 
 breeding_schemes = {'linear_scheme' : breed_linear, "fitness" : breed_dummy_fitness}
 
-def print_results(species, num_generations, creatures):
-    for generation_idx in range(num_generations):
-        print('Creatures in generation ' + str(generation_idx) + ':')
+def print_results(species, num_generations, creatures, print_all_gens = False):
+    if (print_all_gens):
+        for generation_idx in range(num_generations):
+            print('Creatures in generation ' + str(generation_idx) + ':')
+            n = 1
+            for creature in creatures[generation_idx]:
+                #print('Genetic material: ')
+                #for creature_chromosome, genes in creature.chromosomes.items():
+                    #print(creature_chromosome)
+                    #for gene in genes:
+                        #print(gene)
+                print('Sum of genetic attributes, creature ' + str(n) + ': ')
+                print(creature.sum_gene_attributes())
+                print('Creature fitness: ' + str(calculate_dummy_fitness(creature)))
+                print()
+                n += 1
+            print()
+    else:
+        print('Creatures in the final generation:')
         n = 1
-        for creature in creatures[generation_idx]:
-            #print('Genetic material: ')
-            #for creature_chromosome, genes in creature.chromosomes.items():
-                #print(creature_chromosome)
-                #for gene in genes:
-                    #print(gene)
-            print('Sum of genetic attributes, creature ' + str(n) + ': ')
+        for creature in creatures[-1]:
+            print('Sum of genetic attributes, creature ' + str(n) + ':')
             print(creature.sum_gene_attributes())
             print('Creature fitness: ' + str(calculate_dummy_fitness(creature)))
             print()
             n += 1
-        print()
 
 def main(num_generations = 5, species = 'buffalo', breeding_scheme = 'linear_scheme'):
     creature_1 = cr.new_creature(species)
