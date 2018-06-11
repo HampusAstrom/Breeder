@@ -1,6 +1,7 @@
 import sys
 
 from creature import Creature as cr
+import creature as creature_file
 
 def breed_linear(gen0, num_generations):
     current_breeders = gen0[:]
@@ -23,13 +24,21 @@ dummy_ideals_buffalo = {
 }
 
 def calculate_dummy_fitness(creature):
-    abilities, debilities = creature.sum_gene_attributes()
+    creature_abilities, debilities = creature.sum_gene_attributes()
     fitness = 0
-    for ability, value in abilities.items():
-        if ability in dummy_ideals_buffalo:
-            fitness -= abs(value - dummy_ideals_buffalo[ability])
-        else:
-            fitness -= value
+    all_abilities = creature_file.psyche
+    all_abilities += creature_file.tissue
+    all_abilities += creature_file.morphology
+
+    for ability in all_abilities:
+        if ability in creature_abilities:
+            if ability in dummy_ideals_buffalo:
+                fitness -= abs(dummy_ideals_buffalo[ability] - creature_abilities[ability])
+            else:
+                fitness -= creature_abilities[ability]
+        elif ability in dummy_ideals_buffalo:
+            fitness -= dummy_ideals_buffalo[ability]
+
     return fitness
 
 
