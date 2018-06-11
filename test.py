@@ -26,7 +26,7 @@ dummy_ideals_buffalo = {
 def calculate_dummy_fitness(creature):
     creature_abilities, debilities = creature.sum_gene_attributes()
     fitness = 0
-    all_abilities = creature_file.psyche
+    all_abilities = creature_file.psyche[:]
     all_abilities += creature_file.tissue
     all_abilities += creature_file.morphology
 
