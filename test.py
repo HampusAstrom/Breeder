@@ -1,4 +1,6 @@
 import sys
+import matplotlib.pyplot as plt
+import numpy as np
 
 from creature import Creature as cr
 import creature as creature_file
@@ -45,7 +47,6 @@ def calculate_dummy_fitness(creature):
 def breed_dummy_fitness(gen0, num_generations):
     all_creatures = [gen0]
     current_breeders = gen0[:]
-
     num_creatures_in_gen = 6
 
     for generation_idx in range(1, num_generations):
@@ -100,6 +101,16 @@ def print_results(species, num_generations, creatures, print_all_gens = False):
             print()
             n += 1
 
+def plot_fitness(num_generations, creatures):
+    ave_fitness = [0] * num_generations
+    for generation_idx in range(num_generations):
+        generation_fitness = []
+        for creature in creatures[generation_idx]:
+            generation_fitness.append(calculate_dummy_fitness(creature))
+        ave_fitness[generation_idx] = np.mean(generation_fitness)
+    plt.plot(ave_fitness)
+    plt.show()
+
 def main(num_generations = 5, species = 'buffalo', breeding_scheme = 'linear_scheme'):
     creature_1 = cr.new_creature(species)
     creature_2 = cr.new_creature(species)
@@ -109,6 +120,7 @@ def main(num_generations = 5, species = 'buffalo', breeding_scheme = 'linear_sch
     result = breeding_schemes[breeding_scheme](gen0, num_generations)
 
     print_results(species, num_generations, result)
+    plot_fitness(num_generations, result)
     exit()
 
 if __name__ == '__main__':
