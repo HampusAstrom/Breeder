@@ -279,19 +279,19 @@ class Creature:
             curr_chromosome = [(0,0)] * chromosome_length
             curr_pos = 0
 
-            while curr_pos < chromosome_length-1:
+            while curr_pos < chromosome_length:
                 if rng.random() < chunk_shift_chance:
                     start = curr_pos + round(rng.gauss(0,1))
                 else:
                     start = curr_pos
                 start = max(start, 0) # clamped to range
-                end = start + rng.randint(1,4)
-                end = min(end, chromosome_length-1) # clamped to range
-                l = end-start
+                l = rng.randint(1,4)
+                l = min(l, chromosome_length-start) # clamped to range
+                l = min(l, chromosome_length-curr_pos) # clamped to range
                 if rng.randint(0,1) == 0:
-                    curr_chromosome[curr_pos:(curr_pos+l)] = parent1.chromosomes[chrome][start:end]
+                    curr_chromosome[curr_pos:(curr_pos+l)] = parent1.chromosomes[chrome][start:start+l]
                 else:
-                    curr_chromosome[curr_pos:(curr_pos+l)] = parent2.chromosomes[chrome][start:end]
+                    curr_chromosome[curr_pos:(curr_pos+l)] = parent2.chromosomes[chrome][start:start+l]
                 curr_pos = curr_pos + l
 
             chromosomes[chrome] = curr_chromosome

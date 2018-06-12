@@ -95,6 +95,9 @@ def print_results(species, num_generations, creatures, print_all_gens = False):
         print('Creatures in the final generation:')
         n = 1
         for creature in creatures[-1]:
+            print('Raw genome:')
+            print(creature.chromosomes)
+            print()
             print('Sum of genetic attributes, creature ' + str(n) + ':')
             print(creature.sum_gene_attributes())
             print('Creature fitness: ' + str(calculate_dummy_fitness(creature)))
