@@ -239,12 +239,12 @@ class Creature:
             if chrome in parent2.chromosomes:
                 combined_chromosomes.append(chrome)
             elif rng.randint(0,1) == 1:
-                chromosomes[chrome] = genes
+                chromosomes[chrome] = genes[:]
 
         for chrome, genes in parent2.chromosomes.items():
             if chrome not in parent1.chromosomes:
                 if rng.randint(0,1) == 1:
-                    chromosomes[chrome] = genes
+                    chromosomes[chrome] = genes[:]
 
         return combined_chromosomes, chromosomes
 
