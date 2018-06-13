@@ -149,6 +149,8 @@ def main(num_generations = 5, species = 'buffalo', breeding_scheme = 'linear_sch
     print(with_debilities)
     print_results(species, num_generations, result)
     plot_fitness(num_generations, result)
+    derived = creature_1.evaluate_derived_abilities()
+    print(derived)
     plt.show()
     exit()
 
