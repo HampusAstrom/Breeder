@@ -11,6 +11,17 @@ import math
 # debility genes, that only hurts when the same is present many times in a
 # chromosome (gets exponentially worse, after first 2-3?)
 
+derived_abilites = {
+    'cold_resist' :
+        (lambda ability_count : ability_count['fur'] + ability_count['fat']),
+    'heat_resist' :
+        (lambda ability_count : ability_count['sweat_glands'] - ability_count['fur']),
+    'energy_need' :
+        (lambda ability_count : sum(ability_count.values()) + 2 * ability_count['big_brain']),
+    'hunt_chase' :
+        (lambda ability_count : ability_count['fast_muscles'] - ability_count['herbivore'])
+}
+
 # derived abilities
 # cold resistance               ~ fur
 # heat resistance               ~ sweat_glands - fur
@@ -25,7 +36,7 @@ import math
 # running/chasing?
 #
 # domesticated (might depend on other mental attributes)
-# social
+# social+
 # obedient
 # brave
 # violent
@@ -64,7 +75,8 @@ import math
 #   determined as normal
 #       - could probably be fairly common, similar effect to previous method
 #
-#   one gene is added or removed, shifting all the following gene possitions
+#   one gene is added or removed, shiability_count['energetic'] + ability_count['fast_muscles']
+        + ability_count['big_brain'] + ability_count)fting all the following gene possitions
 #       - probably way too big a change in later generation, dont use!
 #
 #
@@ -337,3 +349,14 @@ class Creature:
                     else:
                         deb[debility] = 1
         return ab, deb
+
+    def evaluate_derived_abilities(self):
+        gene_attribute_count = self.sum_gene_attributes()
+        for chrome in self.chromosomes:
+            for gene_name in base_chromosomes[chrome]:
+                if gene_name not in gene_attribute_count:
+                    gene_attribute_count[gene_name] = 0
+        individual_derived_abilites = {}
+        for ability_name, equation in derived_abilities.items():
+            individual_derived_abilites[ability_name] = equation(gene_attribute_count)
+        return individual_derived_abilites
