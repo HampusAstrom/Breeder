@@ -11,7 +11,11 @@ import math
 # debility genes, that only hurts when the same is present many times in a
 # chromosome (gets exponentially worse, after first 2-3?)
 
+<<<<<<< HEAD
 derived_abilities = {
+=======
+derived_abilites = {
+>>>>>>> 7b2619394b4f33af51e160f1c231be8459a87e80
     'cold_resist' :
         (lambda ability_count : ability_count['fur'] + ability_count['fat']),
     'heat_resist' :
@@ -75,7 +79,8 @@ derived_abilities = {
 #   determined as normal
 #       - could probably be fairly common, similar effect to previous method
 #
-#   one gene is added or removed, shifting all the following gene possitions
+#   one gene is added or removed, shiability_count['energetic'] + ability_count['fast_muscles']
+        + ability_count['big_brain'] + ability_count)fting all the following gene possitions
 #       - probably way too big a change in later generation, dont use!
 #
 #
@@ -350,7 +355,11 @@ class Creature:
         return ab, deb
 
     def evaluate_derived_abilities(self):
+<<<<<<< HEAD
         gene_attribute_count, _ = self.sum_gene_attributes()
+=======
+        gene_attribute_count = self.sum_gene_attributes()
+>>>>>>> 7b2619394b4f33af51e160f1c231be8459a87e80
         for chrome in self.chromosomes:
             for gene_name in base_chromosomes[chrome]:
                 if gene_name not in gene_attribute_count:
