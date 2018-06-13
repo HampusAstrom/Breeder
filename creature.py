@@ -129,7 +129,7 @@ base_chromosomes = {
 # to add: small with many kids? vs large with fewer kids?
 
 chromosome_length = 20
-debilities_per_cromosome = chromosome_length
+debilities_per_cromosome = 10
 rand_mutate_chance = 0.0002
 
 use_chunk_combining = True

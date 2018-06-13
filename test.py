@@ -25,8 +25,14 @@ dummy_ideals_buffalo = {
     'fat' : 5
 }
 
+with_debilities = True
+
+all_debilities = ['psyche'+ str(k+1) for k in range(creature_file.debilities_per_cromosome)]
+all_debilities += ['tissue'+ str(k+1) for k in range(creature_file.debilities_per_cromosome)]
+all_debilities += ['morphology'+ str(k+1) for k in range(creature_file.debilities_per_cromosome)]
+
 def calculate_dummy_fitness(creature):
-    creature_abilities, debilities = creature.sum_gene_attributes()
+    creature_abilities, creature_debilities = creature.sum_gene_attributes()
     fitness = 0
     all_abilities = creature_file.psyche[:]
     all_abilities += creature_file.tissue
@@ -40,6 +46,11 @@ def calculate_dummy_fitness(creature):
                 fitness -= creature_abilities[ability]
         elif ability in dummy_ideals_buffalo:
             fitness -= dummy_ideals_buffalo[ability]
+
+    if with_debilities:
+        for debility in all_debilities:
+            if debility in creature_debilities:
+                    fitness -= max(0, creature_debilities[debility]-3)
 
     return fitness
 
@@ -112,18 +123,33 @@ def plot_fitness(num_generations, creatures):
             generation_fitness.append(calculate_dummy_fitness(creature))
         ave_fitness[generation_idx] = np.mean(generation_fitness)
     plt.plot(ave_fitness)
-    plt.show()
 
 def main(num_generations = 5, species = 'buffalo', breeding_scheme = 'linear_scheme'):
     creature_1 = cr.new_creature(species)
     creature_2 = cr.new_creature(species)
 
+    global with_debilities
+
+    with_debilities = True
+
     gen0 = [creature_1, creature_2]
 
     result = breeding_schemes[breeding_scheme](gen0, num_generations)
 
+    print(with_debilities)
     print_results(species, num_generations, result)
     plot_fitness(num_generations, result)
+
+    with_debilities = False
+
+    gen0 = [creature_1, creature_2]
+
+    result = breeding_schemes[breeding_scheme](gen0, num_generations)
+
+    print(with_debilities)
+    print_results(species, num_generations, result)
+    plot_fitness(num_generations, result)
+    plt.show()
     exit()
 
 if __name__ == '__main__':
