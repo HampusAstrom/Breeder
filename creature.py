@@ -13,26 +13,51 @@ import math
 
 derived_abilities = {
     'cold_resist' :
-        (lambda ability_count : ability_count['fur'] + ability_count['fat']),
+        (lambda ab_cnt : ab_cnt['fur'] + ab_cnt['fat'] - ab_cnt['scales']),
     'heat_resist' :
-        (lambda ability_count : ability_count['sweat_glands'] - ability_count['fur']),
+        (lambda ab_cnt : ab_cnt['sweat_glands'] - ab_cnt['fur'] + ab_cnt['scales']),
     'energy_need' :
-        (lambda ability_count : sum(ability_count.values()) + 2 * ability_count['big_brain']),
+        (lambda ab_cnt : sum(ab_cnt.values()) + 2 * ab_cnt['big_brain']),
     'hunt_chase' :
-        (lambda ability_count : ability_count['fast_muscles'] - ability_count['herbivore'])
+        (lambda ab_cnt : ab_cnt['fast_muscles'] - 0.5 * ab_cnt['herbivore'] +
+            2 * ab_cnt['claws'] + ab_cnt['aggressive'] + ab_cnt['fangs'] +
+            ab_cnt['smell']),
+    'hunt_ambush' :
+        (lambda ab_cnt : ab_cnt['composed'] + ab_cnt['fast_muscles'] +
+            ab_cnt['backlimb_focus'] + 2 * ab_cnt['fangs'] + ab_cnt['claws'] +
+            0.7 * ab_cnt['vision']),
+    'camouflage' :
+        (lambda ab_cnt : ab_cnt['fur'] - ab_cnt['fat'] + ab_cnt['composed'] +
+            ab_cnt['scales']),
+    'flee' :
+        (lambda ab_cnt : ab_cnt['fast_muscles'] + ab_cnt['backlimb_focus'] -
+            ab_cnt['fat'] + ab_cnt['hearing'] + ab_cnt['smell']),
+    'violent' :
+        (lambda ab_cnt : 3 + 5 * ab_cnt['aggressive'] - ab_cnt['creative'] +
+            ab_cnt['feral'] - ab_cnt['nurturing'] + ab_cnt['horns'] -
+            ab_cnt['poison_glands'] - ab_cnt['manipulative']),
+    'social' :
+        (lambda ab_cnt : ab_cnt['nurturing'] + ab_cnt['loyal'] - ab_cnt['feral'] +
+            ab_cnt['manipulative'] + 2 * ab_cnt['big_brain'] +
+            0.5 * ab_cnt['creative'] - ab_cnt['autonomous'] + ab_cnt['hearing']),
+    'brave' :
+        (lambda ab_cnt : ab_cnt['composed'] + ab_cnt['aggressive'] +
+            ab_cnt['fast_muscles'] + ab_cnt['slow_muscles'] - ab_cnt['manipulative']),
+    'eat_resist' :
+        (lambda ab_cnt : ab_cnt['poison_glands'] + ab_cnt['scales'])
 }
 
 # derived abilities
 # cold resistance               ~ fur
 # heat resistance               ~ sweat_glands - fur
-# energy needs                  ~ - num_genes
+# energy needs                  ~+ ab_cnt['smell'] - num_genes
 # energy reserves
 # water needs?
 # endurance
 # strength
 # hunting (stalking/chasing?)
 # ambush
-# hiding/camoflage
+#ure_idx hiding/camoflage
 # running/chasing?
 #
 # domesticated (might depend on other mental attributes)
@@ -45,6 +70,7 @@ derived_abilities = {
 # protective (might depend on other mental attributes)
 # perceptive
 # independent/loner
+# difficult to eat
 
 # Eating/Hunting stuff:
 # For all populations in a biome, these things are evaluated:
@@ -113,8 +139,8 @@ tissue = [
 # morphology chromosome:
 morphology = [
     'hearing',
-    'frontlimb focus',
-    'backlimb focus',
+    'frontlimb_focus',
+    'backlimb_focus',
     'vision',
     'jaw_focus',
     'fine_motorics', #?
