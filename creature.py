@@ -15,7 +15,7 @@ derived_abilities = {
     'cold_resist' :
         (lambda ab_cnt : ab_cnt['fur'] + ab_cnt['fat'] - ab_cnt['scales']),
     'heat_resist' :
-        (lambda ab_cnt : ab_cnt['sweat_glands'] - ab_cnt['fur'] + ab_cnt['scales']),
+        (lambda ab_cnt : ab_cnt['sweat_glands'] - ab_cnt['fur'] + ab_cnt['scales'] - ab_cnt['fat']),
     'energy_need' :
         (lambda ab_cnt : sum(ab_cnt.values()) + 2 * ab_cnt['big_brain']),
     'hunt_chase' :
@@ -218,10 +218,10 @@ class Creature:
             for i in range(len(genes)):
                 gene = genes[i]
                 if rng.random() < rand_mutate_chance:
-                    genes[i] = (rng.randint(0,len(base_chromosomes[chrome])), gene[1])
+                    genes[i] = (rng.randint(0,len(base_chromosomes[chrome])-1), gene[1])
                     gene = genes[i]
                 if rng.random() < rand_mutate_chance:
-                    genes[i] = (gene[0], rng.randint(0,len(base_chromosomes[chrome])))
+                    genes[i] = (gene[0], rng.randint(0,len(base_chromosomes[chrome])-1))
 
     # should only be used by internal functions
     # _init_from_species and _init_from_parents

@@ -1,0 +1,13 @@
+- Finish initial derived abilities implementation
+
+- Sketch an initial set of biomes
+
+- Sketch some way to buy and sell animals
+
+- Add more species
+
+- Create some kind of UI (commandline)
+
+- Create some kind of UI (graphical)
+
+- Nicer print function to print aligned abilities
