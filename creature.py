@@ -45,19 +45,31 @@ derived_abilities = {
             ab_cnt['fast_muscles'] + ab_cnt['slow_muscles'] - ab_cnt['manipulative']),
     'eat_resist' :
         (lambda ab_cnt : ab_cnt['poison_glands'] + ab_cnt['scales'])
+    'tree_climber' :
+        (lambda ab_cnt : ab_cnt['fine_motorics'] + ab_cnt['lightweight_bones'] +
+            ab_cnt['claws'] - ab_cnt['fat'])
+    'tame' :
+        (lambda ab_cnt : -5 * ab_cnt['feral'] + ab_cnt['composed'] + ab_cnt['loyal'] -
+            ab_cnt['venom_glands'] + ab_cnt['attentive'] - ab_cnt['autonomous'])
+    'foraging' :
+        (lambda ab_cnt : ab_cnt['creative'] + ab_cnt['claws'] + ab_cnt['smell'] +
+            ab_cnt['vision'] + ab_cnt['fine_motorics'] + ab_cnt['energetic'])
+    'intelligent' :
+        (lambda ab_cnt : ab_cnt['creative'] + ab_cnt['manipulative'] +
+            ab_cnt['attentive'] - ab_cnt['loyal'] + ab_cnt['big_brain'])
 }
 
 # derived abilities
 # cold resistance               ~ fur
 # heat resistance               ~ sweat_glands - fur
-# energy needs                  ~+ ab_cnt['smell'] - num_genes
+# energy needs                  ~ - num_genes
 # energy reserves
 # water needs?
 # endurance
 # strength
 # hunting (stalking/chasing?)
 # ambush
-#ure_idx hiding/camoflage
+# hiding/camoflage
 # running/chasing?
 #
 # domesticated (might depend on other mental attributes)
