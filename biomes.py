@@ -1,40 +1,40 @@
-import Creature from creature.py as creatures
+# import Creature from creature.py as creatures
 
 forest_ranges = {
-    'cold_resist' : [0, 5],
-    'heat_resist' : [0, 5],
+    'cold_resist' : [-2, 50],
+    'heat_resist' : [-2, 50],
     'energy_need' : [0, 50],
-    'tree_climber' : [3, 50]
+    'tree_climber' : [-4, 50]
 }
 
 desert_ranges = {
-    'cold_resist' : [0, 5],
-    'heat_resist' : [5, 10],
-    'energy_need' : [0, 20],
-    'foraging' : [5, 10]
+    'cold_resist' : [-2, 50],
+    'heat_resist' : [3, 50],
+    'energy_need' : [0, 25],
+    'foraging' : [2, 50]
 }
 
 tundra_ranges = {
-    'cold_resist' : [5, 10],
-    'energy_need' : [0, 20],
-    'foraging' : [5, 10]
+    'cold_resist' : [3, 50],
+    'energy_need' : [0, 25],
+    'foraging' : [2, 50]
 }
 
 savannah_ranges = {
-    'heat_resist' : [3, 10],
+    'heat_resist' : [3, 50],
     'energy_need' : [0, 50]
 }
 
 mountain_ranges = {
-    'cold_resist' : [3, 10],
-    'energy_need' : [0, 15],
-    'foraging' : [5, 10]
+    'cold_resist' : [2, 50],
+    'energy_need' : [0, 25],
+    'foraging' : [2, 50]
 }
 
 domestic_ranges = {
     'tame' : [5, 100],
-    'intelligent' : [3, 8],
-    'social' : [10, 20]
+    'intelligent' : [2, 8],
+    'social' : [5, 20]
 }
 
 der_ab_ranges = {
@@ -58,14 +58,14 @@ class Biome:
     def __init__(self, name, type):
         self._region_name = name
         self._type = type
-        self._ab_ranges = der_ab_ranges[_type]
+        self._ab_ranges = der_ab_ranges[self._type]
 
     def get_type(self):
         return _type
 
     def check_fitness(self, creature_abilities):
         fitness = 0
-        inc = 10/len(self._ranges)
+        inc = 10/len(self._ab_ranges)
         for ab, span in self._ab_ranges.items():
             if span[0] < creature_abilities[ab] and span[1] > creature_abilities[ab]:
                 fitness += inc

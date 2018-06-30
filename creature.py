@@ -44,16 +44,16 @@ derived_abilities = {
         (lambda ab_cnt : ab_cnt['composed'] + ab_cnt['aggressive'] +
             ab_cnt['fast_muscles'] + ab_cnt['slow_muscles'] - ab_cnt['manipulative']),
     'eat_resist' :
-        (lambda ab_cnt : ab_cnt['poison_glands'] + ab_cnt['scales'])
+        (lambda ab_cnt : ab_cnt['poison_glands'] + ab_cnt['scales']),
     'tree_climber' :
         (lambda ab_cnt : ab_cnt['fine_motorics'] + ab_cnt['lightweight_bones'] +
-            ab_cnt['claws'] - ab_cnt['fat'])
+            ab_cnt['claws'] - ab_cnt['fat']),
     'tame' :
         (lambda ab_cnt : -5 * ab_cnt['feral'] + ab_cnt['composed'] + ab_cnt['loyal'] -
-            ab_cnt['venom_glands'] + ab_cnt['attentive'] - ab_cnt['autonomous'])
+            ab_cnt['venom_glands'] + ab_cnt['attentive'] - ab_cnt['autonomous']),
     'foraging' :
         (lambda ab_cnt : ab_cnt['creative'] + ab_cnt['claws'] + ab_cnt['smell'] +
-            ab_cnt['vision'] + ab_cnt['fine_motorics'] + ab_cnt['energetic'])
+            ab_cnt['vision'] + ab_cnt['fine_motorics'] + ab_cnt['energetic']),
     'intelligent' :
         (lambda ab_cnt : ab_cnt['creative'] + ab_cnt['manipulative'] +
             ab_cnt['attentive'] - ab_cnt['loyal'] + ab_cnt['big_brain'])
