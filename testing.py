@@ -6,14 +6,16 @@ class TestCreature(unittest.TestCase):
     CROME1 = {'psyche': [(0, 0), (1, 17), (1, 10), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (5, 19), (0, 0), (0, 0), (0, 0), (0, 0), (7, 16), (7, 18), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0)],
               'tissue': [(0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (4, 10), (0, 0), (0, 0), (0, 0), (5, 12), (5, 14), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (1, 18)],
               'morphology': [(0, 0), (0, 0), (0, 0), (5, 10),(0, 0), (0, 0), (8, 14), (0, 0), (0, 0), (0, 0), (0, 0), (13, 17), (0, 0), (13,3), (16, 12), (0, 0), (16, 13), (16, 8), (16, 11), (0,0)]}
-    ATTRI1 = ({'composed': 2, 'nurturing': 1, 'feral': 2, 'fat': 1, 'slow_muscles': 2, 'fur': 1, 'jaw_focus': 1, 'horns': 1, 'smell': 2, 'herbivore': 4}, {'psyche17': 1, 'psyche10': 1, 'psyche19': 1, 'psyche16': 1, 'psyche18': 1, 'tissue10': 1, 'tissue12': 1, 'tissue14': 1, 'tissue18': 1, 'morphology10': 1, 'morphology14': 1, 'morphology17': 1, 'morphology3': 1, 'morphology12': 1, 'morphology13': 1, 'morphology8': 1, 'morphology11': 1})
+    GENEATTRI1 = ({'composed': 2, 'nurturing': 1, 'feral': 2, 'fat': 1, 'slow_muscles': 2, 'fur': 1, 'jaw_focus': 1, 'horns': 1, 'smell': 2, 'herbivore': 4}, {'psyche17': 1, 'psyche10': 1, 'psyche19': 1, 'psyche16': 1, 'psyche18': 1, 'tissue10': 1, 'tissue12': 1, 'tissue14': 1, 'tissue18': 1, 'morphology10': 1, 'morphology14': 1, 'morphology17': 1, 'morphology3': 1, 'morphology12': 1, 'morphology13': 1, 'morphology8': 1, 'morphology11': 1})
+    DERIVATTRI1 = {'cold_resist': 2, 'heat_resist': -2, 'energy_need': 17, 'hunt_chase': 0.0, 'hunt_ambush': 2.0, 'camouflage': 2, 'flee': 1, 'violent': 5, 'social': -1.0, 'brave': 4, 'eat_resist': 0, 'tree_climber': -1, 'tame': -8, 'foraging': 2, 'intelligent': 0}
 
     CROME2 = {'psyche': [(0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 1), (5, 17), (0, 0), (0, 0), (0, 0), (7, 3), (0, 0), (8, 7), (0, 0), (8, 16), (0, 0), (0, 0), (0, 0)],
               'tissue': [(0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (4, 13), (0, 0), (0, 0), (0, 0), (0, 0), (5, 9), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0)],
               'morphology': [(0, 0), (0, 0), (0, 0), (5, 1), (0, 0), (5, 3), (0, 0), (0, 0), (8, 2), (0, 0), (0, 0), (0, 0), (13, 10), (16, 15), (16, 12), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0)]}
-    ATTRI2 = ({'nurturing': 1, 'feral': 1, 'loyal': 2, 'fat': 1, 'slow_muscles': 1, 'jaw_focus': 2, 'horns': 1, 'smell': 1, 'herbivore': 2}, {'psyche1': 1, 'psyche17': 1, 'psyche3': 1, 'psyche7': 1, 'psyche16': 1, 'tissue13': 1, 'tissue9': 1, 'morphology1': 1, 'morphology3': 1, 'morphology2': 1, 'morphology10': 1, 'morphology15': 1, 'morphology12': 1})
+    GENEATTRI2 = ({'nurturing': 1, 'feral': 1, 'loyal': 2, 'fat': 1, 'slow_muscles': 1, 'jaw_focus': 2, 'horns': 1, 'smell': 1, 'herbivore': 2}, {'psyche1': 1, 'psyche17': 1, 'psyche3': 1, 'psyche7': 1, 'psyche16': 1, 'tissue13': 1, 'tissue9': 1, 'morphology1': 1, 'morphology3': 1, 'morphology2': 1, 'morphology10': 1, 'morphology15': 1, 'morphology12': 1})
+    DERIVATTRI2 = {'cold_resist': 1, 'heat_resist': -1, 'energy_need': 12, 'hunt_chase': 0.0, 'hunt_ambush': 0.0, 'camouflage': -1, 'flee': 0, 'violent': 4, 'social': 2.0, 'brave': 1, 'eat_resist': 0, 'tree_climber': -1, 'tame': -3, 'foraging': 1, 'intelligent': -2}
 
-
+    # Test when breeding is viable
     def test_breedning_match(self):
         buff1 = cr.Creature.new_creature('buffalo')
         buff2 = cr.Creature.new_creature('buffalo')
@@ -26,6 +28,7 @@ class TestCreature(unittest.TestCase):
         self.assertTrue(buff1.match_with(buff2))
         self.assertIsNotNone(buff1.breed_with(buff2))
 
+    # Test breeding results
     def test_breedning(self):
         buff1 = cr.Creature.new_creature('buffalo')
         buff2 = cr.Creature.new_creature('buffalo')
@@ -63,6 +66,24 @@ class TestCreature(unittest.TestCase):
         with self.subTest(chunking=True):
             test_identical(self)
             test_different(self)
+
+    # I am not sure this test is good, as derived abilities equations could change
+    # Test that abilities are derived correctly
+    def test_derived_abilities(self):
+        buff1 = cr.Creature.new_creature('buffalo')
+
+        buff1.chromosomes = self.CROME1
+        derived_abs1 = buff1.evaluate_derived_abilities()
+        self.assertEqual(derived_abs1, self.DERIVATTRI1)
+
+    # Test that gene attributes are summed correctly
+    def test_gene_attributes(self):
+        buff1 = cr.Creature.new_creature('buffalo')
+
+        buff1.chromosomes = self.CROME1
+        gene_abs1 = buff1.sum_gene_attributes()
+        self.assertEqual(gene_abs1, self.GENEATTRI1)
+
 
 if __name__ == '__main__':
     unittest.main()
