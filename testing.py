@@ -113,6 +113,12 @@ class TestBiomes(unittest.TestCase):
             self.assertIsNone(wrong)
         self.assertEqual(stdout.getvalue(), 'Unknown biome, cannot create\n')
 
+    def test_check_fitness(self):
+        biome = bi.Biome.init_biome('test_tundra', 'tundra')
+        buff1 = cr.Creature.new_creature('buffalo')
+        buff1.chromosomes = CROME1
+        derived_abs1 = buff1.evaluate_derived_abilities()
+        self.assertEqual(biome.check_fitness(derived_abs1), 3.3333333333333335)
 
 class TestShop(unittest.TestCase):
     def test_init(self):
