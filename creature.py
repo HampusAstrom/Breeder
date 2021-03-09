@@ -212,6 +212,18 @@ species_list = {
     }
 }
 
+def set_rand_mutate_chance(chance):
+    global rand_mutate_chance
+    rand_mutate_chance = chance
+
+def set_use_chunk_combining(use):
+    global use_chunk_combining
+    use_chunk_combining = use
+
+def set_chunk_shift_chance(chance):
+    global chunk_shift_chance
+    chunk_shift_chance = chance
+
 class Creature:
     def rand_mutate(self):
         for chrome, genes in self.chromosomes.items():
