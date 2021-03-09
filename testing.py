@@ -2,6 +2,7 @@ from contextlib import redirect_stdout
 from io import StringIO
 import unittest
 import creature as cr
+import biomes as bi
 
 class TestCreature(unittest.TestCase):
     # typical examples cromosome and resulting attributes
@@ -97,6 +98,18 @@ class TestCreature(unittest.TestCase):
         gene_abs1 = buff1.sum_gene_attributes()
         self.assertEqual(gene_abs1, self.GENEATTRI1)
 
+
+class TestBiomes(unittest.TestCase):
+    def test_init_biome(self):
+        # Create an biome that exists in the list
+        biome = bi.Biome.init_biome('test_tundra', 'tundra')
+        self.assertIsNotNone(biome)
+
+        # Create an biome that does not exists in the list
+        with redirect_stdout(StringIO()) as stdout:
+            wrong = bi.Biome.init_biome('test_wrong', 'saasdfasdaetafdas')
+            self.assertIsNone(wrong)
+        self.assertEqual(stdout.getvalue(), 'Unknown biome, cannot create\n')
 
 if __name__ == '__main__':
     unittest.main()
