@@ -3,15 +3,17 @@ from io import StringIO
 import unittest
 import creature as cr
 import biomes as bi
+from get_wool_dont_overheat import Shop
 
 class TestCreature(unittest.TestCase):
-    # typical examples cromosome and resulting attributes
+    # typical example chromosome and resulting attributes
     CROME1 = {'psyche': [(0, 0), (1, 17), (1, 10), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (5, 19), (0, 0), (0, 0), (0, 0), (0, 0), (7, 16), (7, 18), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0)],
               'tissue': [(0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (4, 10), (0, 0), (0, 0), (0, 0), (5, 12), (5, 14), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (1, 18)],
               'morphology': [(0, 0), (0, 0), (0, 0), (5, 10),(0, 0), (0, 0), (8, 14), (0, 0), (0, 0), (0, 0), (0, 0), (13, 17), (0, 0), (13,3), (16, 12), (0, 0), (16, 13), (16, 8), (16, 11), (0,0)]}
     GENEATTRI1 = ({'composed': 2, 'nurturing': 1, 'feral': 2, 'fat': 1, 'slow_muscles': 2, 'fur': 1, 'jaw_focus': 1, 'horns': 1, 'smell': 2, 'herbivore': 4}, {'psyche17': 1, 'psyche10': 1, 'psyche19': 1, 'psyche16': 1, 'psyche18': 1, 'tissue10': 1, 'tissue12': 1, 'tissue14': 1, 'tissue18': 1, 'morphology10': 1, 'morphology14': 1, 'morphology17': 1, 'morphology3': 1, 'morphology12': 1, 'morphology13': 1, 'morphology8': 1, 'morphology11': 1})
     DERIVATTRI1 = {'cold_resist': 2, 'heat_resist': -2, 'energy_need': 17, 'hunt_chase': 0.0, 'hunt_ambush': 2.0, 'camouflage': 2, 'flee': 1, 'violent': 5, 'social': -1.0, 'brave': 4, 'eat_resist': 0, 'tree_climber': -1, 'tame': -8, 'foraging': 2, 'intelligent': 0}
 
+    # another typical chromosome and resulting attributes, used to check recombination
     CROME2 = {'psyche': [(0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 1), (5, 17), (0, 0), (0, 0), (0, 0), (7, 3), (0, 0), (8, 7), (0, 0), (8, 16), (0, 0), (0, 0), (0, 0)],
               'tissue': [(0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (4, 13), (0, 0), (0, 0), (0, 0), (0, 0), (5, 9), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0)],
               'morphology': [(0, 0), (0, 0), (0, 0), (5, 1), (0, 0), (5, 3), (0, 0), (0, 0), (8, 2), (0, 0), (0, 0), (0, 0), (13, 10), (16, 15), (16, 12), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0)]}
@@ -110,6 +112,20 @@ class TestBiomes(unittest.TestCase):
             wrong = bi.Biome.init_biome('test_wrong', 'saasdfasdaetafdas')
             self.assertIsNone(wrong)
         self.assertEqual(stdout.getvalue(), 'Unknown biome, cannot create\n')
+
+
+class TestShop(unittest.TestCase):
+    def test_init(self):
+        # create with working list of species
+        shop = Shop(5, ['buffalo'])
+        self.assertEqual(len(shop.stocks), 5)
+        self.assertEqual(shop.stocks[0][0], 'buffalo')
+
+        # create with falty list of species
+        with redirect_stdout(StringIO()) as stdout:
+            with self.assertRaises(SystemExit) as e:
+                shop = Shop(5, ['asdfasdasd'])
+        self.assertEqual(stdout.getvalue(), "Species not listed, cannot create\nFailed to create shop creatures. Shuting down.\n")
 
 if __name__ == '__main__':
     unittest.main()
