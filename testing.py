@@ -1,3 +1,5 @@
+from contextlib import redirect_stdout
+from io import StringIO
 import unittest
 import creature as cr
 
@@ -14,6 +16,17 @@ class TestCreature(unittest.TestCase):
               'morphology': [(0, 0), (0, 0), (0, 0), (5, 1), (0, 0), (5, 3), (0, 0), (0, 0), (8, 2), (0, 0), (0, 0), (0, 0), (13, 10), (16, 15), (16, 12), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0)]}
     GENEATTRI2 = ({'nurturing': 1, 'feral': 1, 'loyal': 2, 'fat': 1, 'slow_muscles': 1, 'jaw_focus': 2, 'horns': 1, 'smell': 1, 'herbivore': 2}, {'psyche1': 1, 'psyche17': 1, 'psyche3': 1, 'psyche7': 1, 'psyche16': 1, 'tissue13': 1, 'tissue9': 1, 'morphology1': 1, 'morphology3': 1, 'morphology2': 1, 'morphology10': 1, 'morphology15': 1, 'morphology12': 1})
     DERIVATTRI2 = {'cold_resist': 1, 'heat_resist': -1, 'energy_need': 12, 'hunt_chase': 0.0, 'hunt_ambush': 0.0, 'camouflage': -1, 'flee': 0, 'violent': 4, 'social': 2.0, 'brave': 1, 'eat_resist': 0, 'tree_climber': -1, 'tame': -3, 'foraging': 1, 'intelligent': -2}
+
+    def test_init_from_species(self):
+        # Create an animal that exists in the list
+        buff1 = cr.Creature.new_creature('buffalo')
+        self.assertIsNotNone(buff1)
+
+        # Create an animal that does not exists in the list
+        with redirect_stdout(StringIO()) as stdout:
+            wrong = cr.Creature.new_creature('asdasdssdffal')
+            self.assertIsNone(wrong)
+        self.assertEqual(stdout.getvalue(), "Species not listed, cannot create\n")
 
     # Test when breeding is viable
     def test_breedning_match(self):
