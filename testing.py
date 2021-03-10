@@ -159,5 +159,28 @@ class TestConvergence(unittest.TestCase):
         # Animal with many of the same debilities
         self.assertEqual(ic.calculate_dummy_fitness(buff2), -40)
 
+    def test_breeding_schemes(self):
+        buff1 = cr.Creature.new_creature('buffalo')
+        buff2 = cr.Creature.new_creature('buffalo')
+
+        input = [buff1, buff2]
+
+        for key, scheme in ic.breeding_schemes.items():
+            with self.subTest(scheme_type=key):
+                # One or fewer generation should just return an array with input as the first entry
+                output = scheme(input, 1)
+                self.assertEqual(output, [input])
+
+                output = scheme(input, 0)
+                self.assertEqual(output, [input])
+
+                output = scheme(input, -4)
+                self.assertEqual(output, [input])
+
+                # For more generations, each generation beyond the first should contain a list of creatures
+                output = scheme(input, 5)
+                self.assertEqual(len(output), 5)
+                self.assertIsInstance(output[4][0], cr.Creature)
+
 if __name__ == '__main__':
     unittest.main()
