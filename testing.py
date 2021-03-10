@@ -124,6 +124,7 @@ class TestBiomes(unittest.TestCase):
         buff1 = cr.Creature.new_creature('buffalo')
         buff1.chromosomes = CROME1
         derived_abs1 = buff1.evaluate_derived_abilities()
+        # For this creature 2/3 checks are positive, +/- 1/3 for good/bad
         self.assertEqual(biome.check_fitness(derived_abs1), 3.3333333333333335)
 
 class TestShop(unittest.TestCase):
