@@ -4,6 +4,7 @@ import unittest
 import creature as cr
 import biomes as bi
 from get_wool_dont_overheat import Shop
+import investigate_convergence as ic
 
 # typical example chromosome and resulting attributes
 CROME1 = {'psyche': [(0, 0), (1, 17), (1, 10), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (5, 19), (0, 0), (0, 0), (0, 0), (0, 0), (7, 16), (7, 18), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0)],
@@ -16,8 +17,13 @@ DERIVATTRI1 = {'cold_resist': 2, 'heat_resist': -2, 'energy_need': 17, 'hunt_cha
 CROME2 = {'psyche': [(0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 1), (5, 17), (0, 0), (0, 0), (0, 0), (7, 3), (0, 0), (8, 7), (0, 0), (8, 16), (0, 0), (0, 0), (0, 0)],
           'tissue': [(0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (4, 13), (0, 0), (0, 0), (0, 0), (0, 0), (5, 9), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0)],
           'morphology': [(0, 0), (0, 0), (0, 0), (5, 1), (0, 0), (5, 3), (0, 0), (0, 0), (8, 2), (0, 0), (0, 0), (0, 0), (13, 10), (16, 15), (16, 12), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0)]}
-GENEATTRI2 = ({'nurturing': 1, 'feral': 1, 'loyal': 2, 'fat': 1, 'slow_muscles': 1, 'jaw_focus': 2, 'horns': 1, 'smell': 1, 'herbivore': 2}, {'psyche1': 1, 'psyche17': 1, 'psyche3': 1, 'psyche7': 1, 'psyche16': 1, 'tissue13': 1, 'tissue9': 1, 'morphology1': 1, 'morphology3': 1, 'morphology2': 1, 'morphology10': 1, 'morphology15': 1, 'morphology12': 1})
-DERIVATTRI2 = {'cold_resist': 1, 'heat_resist': -1, 'energy_need': 12, 'hunt_chase': 0.0, 'hunt_ambush': 0.0, 'camouflage': -1, 'flee': 0, 'violent': 4, 'social': 2.0, 'brave': 1, 'eat_resist': 0, 'tree_climber': -1, 'tame': -3, 'foraging': 1, 'intelligent': -2}
+#ENEATTRI2 = ({'nurturing': 1, 'feral': 1, 'loyal': 2, 'fat': 1, 'slow_muscles': 1, 'jaw_focus': 2, 'horns': 1, 'smell': 1, 'herbivore': 2}, {'psyche1': 1, 'psyche17': 1, 'psyche3': 1, 'psyche7': 1, 'psyche16': 1, 'tissue13': 1, 'tissue9': 1, 'morphology1': 1, 'morphology3': 1, 'morphology2': 1, 'morphology10': 1, 'morphology15': 1, 'morphology12': 1})
+#DERIVATTRI2 = {'cold_resist': 1, 'heat_resist': -1, 'energy_need': 12, 'hunt_chase': 0.0, 'hunt_ambush': 0.0, 'camouflage': -1, 'flee': 0, 'violent': 4, 'social': 2.0, 'brave': 1, 'eat_resist': 0, 'tree_climber': -1, 'tame': -3, 'foraging': 1, 'intelligent': -2}
+
+CROME3 =  {'psyche': [(0, 0), (1, 1), (1, 1), (0, 1), (0, 1), (0, 1), (0, 1), (0, 0), (5, 1), (0, 0), (0, 0), (0, 0), (0, 0), (7, 16), (7, 18), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0)],
+          'tissue': [(0, 0), (0, 0), (0, 0), (0, 2), (0, 2), (4, 2), (0, 2), (0, 2), (0, 2), (5, 12), (5, 14), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (0, 0), (1, 18)],
+          'morphology': [(0, 0), (0, 0), (0, 0), (5, 10),(0, 0), (0, 0), (8, 14), (0, 0), (0, 0), (0, 0), (0, 0), (13, 17), (0, 0), (13,3), (16, 12), (0, 0), (16, 13), (16, 8), (16, 11), (0,0)]}
+
 class TestCreature(unittest.TestCase):
 
     def test_init_from_species(self):
@@ -132,6 +138,26 @@ class TestShop(unittest.TestCase):
             with self.assertRaises(SystemExit) as e:
                 shop = Shop(5, ['asdfasdasd'])
         self.assertEqual(stdout.getvalue(), "Species not listed, cannot create\nFailed to create shop creatures. Shuting down.\n")
+
+class TestConvergence(unittest.TestCase):
+    def test_calculate_dummy_fitness(self):
+        buff1 = cr.Creature.new_creature('buffalo')
+        buff1.chromosomes = CROME1
+        buff2 = cr.Creature.new_creature('buffalo')
+        buff2.chromosomes = CROME3
+
+        # Debilities should impact only when you have many of the same
+        ic.with_debilities = True
+        # Healthy animal
+        self.assertEqual(ic.calculate_dummy_fitness(buff1), -40)
+        # Animal with many of the same debilities
+        self.assertEqual(ic.calculate_dummy_fitness(buff2), -47)
+
+        ic.with_debilities = False
+        # Healthy animal
+        self.assertEqual(ic.calculate_dummy_fitness(buff1), -40)
+        # Animal with many of the same debilities
+        self.assertEqual(ic.calculate_dummy_fitness(buff2), -40)
 
 if __name__ == '__main__':
     unittest.main()
