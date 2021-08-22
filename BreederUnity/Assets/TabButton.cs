@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using Breeder;
 
 [RequireComponent(typeof(Image))]
 public class TabButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler
@@ -13,6 +14,7 @@ public class TabButton : MonoBehaviour, IPointerClickHandler, IPointerEnterHandl
   public void OnPointerClick(PointerEventData eventData)
   {
     tabGroup.OnTabSelected(this);
+    World.Testrun();
   }
 
   public void OnPointerEnter(PointerEventData eventData)
